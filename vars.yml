@@ -1,0 +1,4 @@
+package_name:
+  - nginx
+  - fake
+ansible_python_interpreter: /usr/bin/python3

@@ -1,0 +1,25 @@
+- name: "check whether package {{ item }} is installed"
+  command: rpm -q "{{ item }}"
+  ignore_errors: true
+  register: package_installed
+  changed_when: False
+  
+- name: Print status before
+  debug: 
+    var: package_installed.stdout
+
+- name: "install {{ item }}"
+  package:
+    name: "{{ item }}"
+    state: present
+  when: package_installed.rc == 1
+
+- name: "check whether package {{ item }} is installed"
+  command: rpm -q "{{ item }}"
+  ignore_errors: true
+  register: after_package_installed
+  changed_when: False
+
+- name: Print status after
+  debug: 
+    var: after_package_installed.stdout

@@ -1,0 +1,11 @@
+---
+- name: Install packages 
+  hosts: my_group
+  become: yes
+  gather_facts: no
+  vars_files: vars.yml
+
+  tasks:
+    - name: call package installer
+      include_tasks: package.yml
+      with_items: "{{ package_name }}"

@@ -1,0 +1,60 @@
+host1: nginx is not installed - then installs successfully, fake is not installed, fails to install
+host2: nginx is installed, fake is not installed, fails to install
+
+
+PLAY [Install packages] ***********************************************************************************************************************
+
+TASK [call package installer] *****************************************************************************************************************
+included: /mnt/c/Users/vratn/ansible-test/package.yml for host1, host2 => (item=nginx)
+included: /mnt/c/Users/vratn/ansible-test/package.yml for host1, host2 => (item=fake)
+
+TASK [check whether package nginx is installed] ***********************************************************************************************
+fatal: [host1]: FAILED! => {"changed": false, "cmd": ["rpm", "-q", "nginx"], "delta": "0:00:00.011817", "end": "2023-08-17 14:48:22.523113", "msg": "non-zero return code", "rc": 1, "start": "2023-08-17 14:48:22.511296", "stderr": "", "stderr_lines": [], "stdout": "package nginx is not installed", "stdout_lines": ["package nginx is not installed"]}
+...ignoring
+ok: [host2]
+
+TASK [Print status before] ********************************************************************************************************************
+ok: [host1] => {
+    "package_installed.stdout": "package nginx is not installed"
+}
+ok: [host2] => {
+    "package_installed.stdout": "nginx-1.24.0-1.fc38.x86_64"
+}
+
+TASK [install nginx] **************************************************************************************************************************
+skipping: [host2]
+changed: [host1]
+
+TASK [check whether package nginx is installed] ***********************************************************************************************
+ok: [host1]
+ok: [host2]
+
+TASK [Print status after] *********************************************************************************************************************
+ok: [host1] => {
+    "after_package_installed.stdout": "nginx-1.24.0-1.fc38.x86_64"
+}
+ok: [host2] => {
+    "after_package_installed.stdout": "nginx-1.24.0-1.fc38.x86_64"
+}
+
+TASK [check whether package fake is installed] ************************************************************************************************
+fatal: [host1]: FAILED! => {"changed": false, "cmd": ["rpm", "-q", "fake"], "delta": "0:00:00.010662", "end": "2023-08-17 14:48:29.257442", "msg": "non-zero return code", "rc": 1, "start": "2023-08-17 14:48:29.246780", "stderr": "", "stderr_lines": [], "stdout": "package fake is not installed", "stdout_lines": ["package fake is not installed"]}
+...ignoring
+fatal: [host2]: FAILED! => {"changed": false, "cmd": ["rpm", "-q", "fake"], "delta": "0:00:00.012950", "end": "2023-08-17 14:48:29.286795", "msg": "non-zero return code", "rc": 1, "start": "2023-08-17 14:48:29.273845", "stderr": "", "stderr_lines": [], "stdout": "package fake is not installed", "stdout_lines": ["package fake is not installed"]}
+...ignoring
+
+TASK [Print status before] ********************************************************************************************************************
+ok: [host1] => {
+    "package_installed.stdout": "package fake is not installed"
+}
+ok: [host2] => {
+    "package_installed.stdout": "package fake is not installed"
+}
+
+TASK [install fake] ***************************************************************************************************************************
+fatal: [host1]: FAILED! => {"changed": false, "failures": ["No package fake available."], "msg": "Failed to install some of the specified packages", "rc": 1, "results": []}
+fatal: [host2]: FAILED! => {"changed": false, "failures": ["No package fake available."], "msg": "Failed to install some of the specified packages", "rc": 1, "results": []}
+
+PLAY RECAP ************************************************************************************************************************************
+host1                      : ok=9    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=2
+host2                      : ok=8    changed=0    unreachable=0    failed=1    skipped=1    rescued=0    ignored=1

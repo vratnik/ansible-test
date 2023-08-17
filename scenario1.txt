@@ -1,0 +1,72 @@
+host1: package nginx is installed, httpd is not installed, succeeds to install
+host2: both packages are installed, no action taken
+
+
+ja@franet-win:/mnt/c/Users/vratn/ansible-test$ ansible-playbook main.yml -i hosts -u ja --private-key ~/.ssh/id_rsa --extra-vars "ansible_sudo_pass=mk"
+
+PLAY [Install packages] ***********************************************************************************************************************
+
+TASK [call package installer] *****************************************************************************************************************
+included: /mnt/c/Users/vratn/ansible-test/package.yml for host1, host2 => (item=nginx)
+included: /mnt/c/Users/vratn/ansible-test/package.yml for host1, host2 => (item=httpd)
+
+TASK [check whether package nginx is installed] ***********************************************************************************************
+ok: [host1]
+ok: [host2]
+
+TASK [Print status before] ********************************************************************************************************************
+ok: [host1] => {
+    "package_installed.stdout": "nginx-1.24.0-1.fc38.x86_64"
+}
+ok: [host2] => {
+    "package_installed.stdout": "nginx-1.24.0-1.fc38.x86_64"
+}
+
+TASK [install nginx] **************************************************************************************************************************
+skipping: [host1]
+skipping: [host2]
+
+TASK [check whether package nginx is installed] ***********************************************************************************************
+ok: [host1]
+ok: [host2]
+
+TASK [Print status after] *********************************************************************************************************************
+ok: [host1] => {
+    "after_package_installed.stdout": "nginx-1.24.0-1.fc38.x86_64"
+}
+ok: [host2] => {
+    "after_package_installed.stdout": "nginx-1.24.0-1.fc38.x86_64"
+}
+
+TASK [check whether package httpd is installed] ***********************************************************************************************
+fatal: [host1]: FAILED! => {"changed": false, "cmd": ["rpm", "-q", "httpd"], "delta": "0:00:00.011645", "end": "2023-08-17 14:38:51.216193", "failed_when_result": true, "msg": "non-zero return code", "rc": 1, "start": "2023-08-17 14:38:51.204548", "stderr": "", "stderr_lines": [], "stdout": "package httpd is not installed", "stdout_lines": ["package httpd is not installed"]}
+...ignoring
+ok: [host2]
+
+TASK [Print status before] ********************************************************************************************************************
+ok: [host1] => {
+    "package_installed.stdout": "package httpd is not installed"
+}
+ok: [host2] => {
+    "package_installed.stdout": "httpd-2.4.56-1.fc38.x86_64"
+}
+
+TASK [install httpd] **************************************************************************************************************************
+skipping: [host2]
+changed: [host1]
+
+TASK [check whether package httpd is installed] ***********************************************************************************************
+ok: [host1]
+ok: [host2]
+
+TASK [Print status after] *********************************************************************************************************************
+ok: [host1] => {
+    "after_package_installed.stdout": "httpd-2.4.57-1.fc38.x86_64"
+}
+ok: [host2] => {
+    "after_package_installed.stdout": "httpd-2.4.56-1.fc38.x86_64"
+}
+
+PLAY RECAP ************************************************************************************************************************************
+host1                      : ok=11   changed=1    unreachable=0    failed=0    skipped=1    rescued=0    ignored=1
+host2                      : ok=10   changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0
